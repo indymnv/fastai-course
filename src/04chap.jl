@@ -1,3 +1,4 @@
+using Plots: text_box_width
 using DataFrames
 using CSV
 using Statistics
@@ -15,12 +16,6 @@ test_x,  test_y  =MNIST(split=:test)[:]
 # Select just one picture
 heatmap(train_x[:, :, 3])
 
-heatmap(reshape(train_x[:, :, 3],  ))
-
-train_x[1:28, 1:28, 1]
-
-train_y
-
 pixel_avg = zeros(Float64, 28,28)
 
 for i in 1:size(train_x)[1]
@@ -31,6 +26,7 @@ end
 
 heatmap(pixel_avg)
 
+#average every pixel
 mean(train_x[10,10,findall(x -> x ==5 , train_y)])
 
 function matrix_avg(y_value)
@@ -46,16 +42,41 @@ function matrix_avg(y_value)
 end
 
 
-mean(abs.(a - b))
-
 test_x[:,:,1] 
 
 mean(train_x[10,10,findall(x -> x ==5 , train_y)])
 
 function absolute_error_avg(real_matrix , model_matrix)
-		return mean(abs.(real_matrix - model_matrix))
+	return mean(abs.(real_matrix - model_matrix))
 end
 
 function prediction()
-	Nothing
+	model_avg_list = []
+	list_predictions = []
+	for i in 0:9
+		push!(model_avg_list, matrix_avg(i))
+	end
+
+	for target in 1:size(test_x, 3)
+		min_error = Inf
+		prediction =  Inf
+		for (idx, model_avg) in enumerate(model_avg_list)
+			if absolute_error_avg(test_x[:,:,target], model_avg) < min_error
+				min_error = absolute_error_avg(test_x[:,:,target], model_avg)
+				prediction = idx -1 
+			end
+		end
+		push!(list_predictions, prediction)
+	end
 end
+
+# Obtener los 9 moldes
+# ir iterando en cada matriz del testeo
+# vamos a sacar el error absoluto para los 10 caso
+# nos quedamos con el menor error
+
+
+for target in 1:size(test_x)[3]
+end
+
+eachindex(test_x[:,:,1:end])
