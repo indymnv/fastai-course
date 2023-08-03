@@ -3,6 +3,7 @@ using DataFrames
 using CSV
 using Statistics
 using Flux
+using BenchmarkTools
 
 using MLDatasets
 using Plots; unicodeplots()
@@ -28,6 +29,12 @@ heatmap(pixel_avg)
 
 #average every pixel
 mean(train_x[10,10,findall(x -> x ==5 , train_y)])
+
+# Obtener los 9 moldes
+# ir iterando en cada matriz del testeo
+# vamos a sacar el error absoluto para los 10 caso
+# nos quedamos con el menor error
+
 
 function matrix_avg(y_value)
 		
@@ -68,15 +75,15 @@ function prediction()
 		end
 		push!(list_predictions, prediction)
 	end
+	return list_predictions
 end
 
-# Obtener los 9 moldes
-# ir iterando en cada matriz del testeo
-# vamos a sacar el error absoluto para los 10 caso
-# nos quedamos con el menor error
+list_results = prediction()
 
-
-for target in 1:size(test_x)[3]
+function accuracy(y_real, y_predict)
+	sum(y_real.== y_predict) / length(y_predict)
 end
 
-eachindex(test_x[:,:,1:end])
+accuracy(test_y, list_results)
+
+
